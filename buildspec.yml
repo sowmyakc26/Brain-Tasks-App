@@ -1,15 +1,12 @@
 version: 0.2
 
 phases:
-   install:
+  install:
     commands:
-      - echo "Installing kubectl..."
-      - wget https://dl.k8s.io
-      - ls -l kubectl || echo "File not found!"
+      - echo Installing kubectl...
+      - curl -LO "https://dl.k8s.io"
       - chmod +x ./kubectl
       - mv ./kubectl /usr/local/bin/
-      - kubectl version --client
-
   pre_build:
     commands:
       - echo Logging in to ECR...
@@ -25,4 +22,3 @@ phases:
       - echo Updating EKS...
       - aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER_NAME
       - kubectl apply -f k8s-deploy.yaml
-
