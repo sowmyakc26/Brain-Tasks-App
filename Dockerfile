@@ -1,17 +1,12 @@
-# Build stage
-FROM public.ecr.aws/docker/library/node:18-alpine AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
-
-# Production stage
+# Use Amazon's public mirror for Nginx to avoid the 429 Rate Limit error
 FROM public.ecr.aws/docker/library/nginx:alpine
-# This line checks for BOTH 'dist' or 'build' folders to be safe
-COPY --from=build /app/build /usr/share/nginx/html || COPY --from=build /app/dist /usr/share/nginx/html
 
-# Update Nginx to listen on 3000
-RUN sed -i 's/listen\(.*\)80;/listen 3000;/' /etc/nginx/conf.d/default.conf
+# Copy the 'dist' folder from your repository directly into Nginx
+COPY dist/ /usr/share/nginx/html
+
+# Update Nginx to listen on port 3000 (standard for your setup)
+RUN sed -i 's/listen\(.*\)*80;/listen 3000;/' /etc/nginx/conf.d/default.conf
+
 EXPOSE 3000
+
 CMD ["nginx", "-g", "daemon off;"]
