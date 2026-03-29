@@ -3,8 +3,10 @@ version: 0.2
 phases:
   install:
     commands:
+        install:
+    commands:
       - echo Installing kubectl...
-      - - curl -O https://s3.us-west-2.amazonaws.com
+      - curl -O https://s3.us-west-2.amazonaws.com
       - chmod +x ./kubectl
       - mv ./kubectl /usr/local/bin/
   pre_build:
