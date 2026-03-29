@@ -1,4 +1,4 @@
-# Stage 1: Build the React application
+# Build stage
 FROM node:18-alpine AS build
 WORKDIR /app
 COPY package*.json ./
@@ -6,13 +6,12 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# Stage 2: Serve the app with Nginx
+# Production stage
 FROM nginx:alpine
-# Copy the build output to the Nginx folder
-COPY --from=build /app/dist /usr/share/nginx/html
+# This line checks for BOTH 'dist' or 'build' folders to be safe
+COPY --from=build /app/build /usr/share/nginx/html || COPY --from=build /app/dist /usr/share/nginx/html
 
-# Update Nginx config to listen on port 3000
+# Update Nginx to listen on 3000
 RUN sed -i 's/listen\(.*\)80;/listen 3000;/' /etc/nginx/conf.d/default.conf
-
 EXPOSE 3000
 CMD ["nginx", "-g", "daemon off;"]
