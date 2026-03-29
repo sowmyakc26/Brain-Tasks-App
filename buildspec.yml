@@ -15,7 +15,7 @@ phases:
     commands:
       - echo Building the Docker image...
       - ls -R  # <--- Add this line here
-      - docker build -t $ECR_REPO_URL -f dockerfile .
+      - docker build -t $ECR_REPO_URL .
 
   post_build:
     commands:
