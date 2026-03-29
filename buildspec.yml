@@ -14,11 +14,11 @@ phases:
   build:
     commands:
       - echo Building the Docker image...
-      - docker build -t $ECR_REPO_URL:latest .
+      - docker build -t $ECR_REPO_URL .
   post_build:
     commands:
       - echo Pushing the Docker image...
-      - docker push $ECR_REPO_URL:latest
+      - docker push $ECR_REPO_URL
       - echo Updating EKS...
       - aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER_NAME
       - kubectl apply -f k8s-deploy.yaml
