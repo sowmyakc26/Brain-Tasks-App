@@ -1,33 +1,19 @@
 version: 0.2
 
 phases:
-   install:
+  install:
     commands:
-      - echo "Setting up Kubernetes repo..."
-      - |
-        cat <<EOF | tee /etc/yum.repos.d/kubernetes.repo
-        [kubernetes]
-        name=Kubernetes
-        baseurl=https://pkgs.k8s.io
-        enabled=1
-        gpgcheck=1
-        gpgkey=https://pkgs.k8s.iorepodata/repomd.xml.key
-        EOF
-      - yum install -y kubectl
-      - kubectl version --client
-
+      - curl -LO "https://dl.k8s.io"
+      - chmod +x ./kubectl
+      - mv ./kubectl /usr/local/bin/
   pre_build:
     commands:
-      - echo Logging in to ECR...
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_URL
   build:
     commands:
-      - echo Building the Docker image using the dist folder...
       - docker build -t $ECR_REPO_URL .
   post_build:
     commands:
-      - echo Pushing the Docker image...
       - docker push $ECR_REPO_URL
-      - echo Updating EKS...
       - aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER_NAME
       - kubectl apply -f k8s-deploy.yaml
