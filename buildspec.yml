@@ -1,18 +1,25 @@
+
 version: 0.2
 
 phases:
+  install:
+    runtime-versions:
+      docker: 20  # This ensures Docker is active
+    commands:
+      - echo Installing kubectl...
+      - curl -LO "https://dl.k8s.io(curl -L -s https://dl.k8s.io)/bin/linux/amd64/kubectl"
+      - chmod +x kubectl
+      - mv kubectl /usr/local/bin/
   pre_build:
     commands:
-      - echo Logging in to Amazon ECR...
+      - echo Logging in to ECR...
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_URL
   build:
     commands:
-      - echo Building the Docker image...
+      - echo Building...
       - docker build -t $ECR_REPO_URL:latest .
   post_build:
     commands:
-      - echo Pushing the Docker image...
       - docker push $ECR_REPO_URL:latest
-      - echo Updating EKS Deployment...
       - aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER_NAME
       - kubectl apply -f k8s-deploy.yaml
