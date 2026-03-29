@@ -1,12 +1,21 @@
 version: 0.2
 
 phases:
-  install:
+   install:
     commands:
-      - echo Installing kubectl...
-      - curl -LO "https://dl.k8s.io"
-      - chmod +x ./kubectl
-      - mv ./kubectl /usr/local/bin/
+      - echo "Setting up Kubernetes repo..."
+      - |
+        cat <<EOF | tee /etc/yum.repos.d/kubernetes.repo
+        [kubernetes]
+        name=Kubernetes
+        baseurl=https://pkgs.k8s.io
+        enabled=1
+        gpgcheck=1
+        gpgkey=https://pkgs.k8s.iorepodata/repomd.xml.key
+        EOF
+      - yum install -y kubectl
+      - kubectl version --client
+
   pre_build:
     commands:
       - echo Logging in to ECR...
