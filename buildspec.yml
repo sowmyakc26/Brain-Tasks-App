@@ -14,7 +14,8 @@ phases:
   build:
     commands:
       - echo Building the Docker image...
-      - docker build -t $ECR_REPO_URL ./src
+      - docker build -t $ECR_REPO_URL -f dockerfile .
+
   post_build:
     commands:
       - echo Pushing the Docker image...
