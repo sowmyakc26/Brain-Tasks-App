@@ -13,7 +13,7 @@ phases:
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_URL
   build:
     commands:
-      - echo Building the Docker image...
+      - echo Building the Docker image using the dist folder...
       - docker build -t $ECR_REPO_URL .
   post_build:
     commands:
