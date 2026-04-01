@@ -22,7 +22,8 @@ phases:
       - printf '{"ImageURI":"%s"}' ${REPOSITORY_URI}:${IMAGE_TAG} > imageDetail.json
 artifacts:
   files:
-    - imageDetail.json
-    - k8s-deployment.yaml
-    - k8s-service.yaml
+    - '**/*'
+  base-directory: 'dist'
+
+    
 
