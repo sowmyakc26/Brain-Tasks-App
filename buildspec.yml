@@ -4,19 +4,17 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_://amazonaws.com
-      - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_://amazonaws.com/brain-tasks-app
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ://amazonaws.com
+      - REPOSITORY_URI=://amazonaws.com/brain-tasks-app
   build:
     commands:
-      - echo Build started on `date`
       - echo Building the Docker image...
       - docker build -t $REPOSITORY_URI:latest .
   post_build:
     commands:
-      - echo Build completed on `date`
-      - echo Pushing the Docker image...
+      - echo Pushing the Docker image to ECR...
       - docker push $REPOSITORY_URI:latest
-      - echo Updating K8s deployment...
-      - aws eks update-kubeconfig --region $AWS_DEFAULT_REGION --name brain
+      - echo Connecting to EKS and Deploying...
+      - aws eks update-kubeconfig --region us-east-1 --name brain
       - kubectl apply -f k8s/deployment.yaml
       - kubectl apply -f k8s/service.yaml
