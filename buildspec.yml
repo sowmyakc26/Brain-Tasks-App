@@ -2,13 +2,11 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      nodejs: 18
     commands:
-      - npm install
+      - echo "No installation needed - files are pre-built."
   build:
     commands:
-      - npm run build
+      - echo "Moving files to deployment..."
 artifacts:
   files:
     - '**/*'
