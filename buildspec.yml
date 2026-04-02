@@ -11,8 +11,8 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - # Replace <ACCOUNT_ID> with your 12-digit AWS account number
-      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com
-      - REPOSITORY_URI=<ACCOUNT_ID>://
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 259151462279.dkr.ecr.us-east-1.amazonaws.com
+      - REPOSITORY_URI=259151462279://
   build:
     commands:
       - echo Building the Docker image...
