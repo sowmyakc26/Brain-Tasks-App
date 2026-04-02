@@ -1,11 +1,18 @@
 version: 0.2
 
 phases:
+  install:
+    commands:
+      - echo Installing kubectl...
+      - curl -O https://amazonaws.com
+      - chmod +x ./kubectl
+      - mv ./kubectl /usr/local/bin/kubectl
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ://amazonaws.com
-      - REPOSITORY_URI=://amazonaws.com/brain-tasks-app
+      - # Replace <ACCOUNT_ID> with your 12-digit AWS account number
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com
+      - REPOSITORY_URI=<ACCOUNT_ID>://
   build:
     commands:
       - echo Building the Docker image...
@@ -18,3 +25,5 @@ phases:
       - aws eks update-kubeconfig --region us-east-1 --name brain
       - kubectl apply -f k8s/deployment.yaml
       - kubectl apply -f k8s/service.yaml
+      - echo Deployment complete. Fetching LoadBalancer URL...
+      - kubectl get svc brain-tasks-service
